@@ -1,3 +1,5 @@
 Flask==3.1.0
 Flask_Cors==5.0.0
 gunicorn==23.0.0
+python-dotenv==1.0.1
+pyyaml==6.0.2
