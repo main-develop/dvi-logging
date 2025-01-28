@@ -2,7 +2,7 @@ from flask import request, jsonify
 from datetime import datetime
 import logging
 import json
-from models.log_models import PageNavigationLog, AuthenticationActionLog
+from models.log_models import PageNavigationLog, AuthenticationActionLog, SettingsActionLog
 from pydantic import ValidationError
 
 
@@ -37,6 +37,8 @@ def process_log_entry(logger: logging.Logger) -> tuple[dict, int]:
             log = PageNavigationLog.model_validate(data)
         elif event_type in {"sign_up", "log_in", "log_out"}:
             log = AuthenticationActionLog.model_validate(data)
+        elif event_type in {"change_personal_information", "change_email", "change_password", "delete_account"}:
+            log = SettingsActionLog.model_validate(data)
 
         logger.info(json.dumps(data, ensure_ascii=False))
 

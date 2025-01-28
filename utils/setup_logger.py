@@ -10,6 +10,10 @@ logs_paths = {
     "sign_up_logger": os.environ.get("SIGN_UP_LOGS_PATH"),
     "log_in_logger": os.environ.get("LOG_IN_LOGS_PATH"),
     "log_out_logger": os.environ.get("LOG_OUT_LOGS_PATH"),
+    "change_personal_information_logger": os.environ.get("CHANGE_PERSONAL_INFORMATION_LOGS_PATH"),
+    "change_email_logger": os.environ.get("CHANGE_EMAIL_LOGS_PATH"),
+    "change_password_logger": os.environ.get("CHANGE_PASSWORD_LOGS_PATH"),
+    "delete_account_logger": os.environ.get("DELETE_ACCOUNT_LOGS_PATH"),
 }
 logging.config.fileConfig("logging.conf")
 

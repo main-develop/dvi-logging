@@ -6,6 +6,7 @@ navigation_logger = setup_logger("navigation_logger")
 
 navigation = Blueprint("navigation", __name__)
 
+
 @navigation.route("/send-navigation-log", methods=["POST"])
 def send_navigation_log():
     return process_log_entry(navigation_logger)
