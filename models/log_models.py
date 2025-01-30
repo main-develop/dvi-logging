@@ -14,7 +14,7 @@ EventType = Literal[
 
 class BaseLog(BaseModel):
     sent_at: datetime = Field(..., description="Send time in ISO format.")
-    received_at: datetime = Field(..., description="Receive time in ISO format.")
+    processed_at: datetime = Field(..., description="Process time in ISO format.")
     latency_ms: int = Field(..., description="Latency in milliseconds.")
     log_level: LogLevel
     event_type: EventType
