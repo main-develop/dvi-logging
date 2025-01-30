@@ -4,9 +4,10 @@ import logging
 import json
 from models.log_models import PageNavigationLog, AuthenticationActionLog, SettingsActionLog
 from pydantic import ValidationError
+from utils.setup_logger import setup_logger
 
 
-def process_log_entry(logger: logging.Logger) -> tuple[dict, int]:
+def process_log_entry() -> tuple[dict, int]:
     """Process and validate a log entry received in JSON format.
 
     Return a ``tuple`` with:
@@ -16,31 +17,38 @@ def process_log_entry(logger: logging.Logger) -> tuple[dict, int]:
     if not request.is_json:
         return jsonify({"message": "Invalid content type, expected application/json."}), 400
 
-    data = request.get_json(silent=False)
+    data = request.get_json(silent=False, force=True)
 
     if not data:
         return jsonify({"message": "Failed to process log. No data received."}), 400
     
     try:
-        received_at_iso = datetime.utcnow().isoformat() + 'Z'
-        data["received_at"] = received_at_iso
+        processed_at_iso = datetime.utcnow().isoformat() + 'Z'
+        data["processed_at"] = processed_at_iso
 
         sent_at_dt: datetime = datetime.fromisoformat(data["sent_at"])
-        received_at_dt: datetime = datetime.fromisoformat(received_at_iso)
+        processed_at_dt: datetime = datetime.fromisoformat(processed_at_iso)
 
-        latency_ms: int = int((received_at_dt - sent_at_dt).total_seconds() * 1000)
+        latency_ms: int = int((processed_at_dt - sent_at_dt).total_seconds() * 1000)
         data["latency_ms"] = latency_ms
 
         event_type = data["event_type"]
 
         if event_type == "page_navigation":
             log = PageNavigationLog.model_validate(data)
+
+            navigation_logger = setup_logger("navigation_logger", {"data": data})
+            navigation_logger.info("Received page navigation log")
         elif event_type in {"sign_up", "log_in", "log_out"}:
             log = AuthenticationActionLog.model_validate(data)
+
+            authentication_logger = setup_logger("authentication_logger", {"data": data})
+            authentication_logger.info("Received authentication action log")
         elif event_type in {"change_personal_information", "change_email", "change_password", "delete_account"}:
             log = SettingsActionLog.model_validate(data)
 
-        logger.info(json.dumps(data, ensure_ascii=False))
+            settings_logger = setup_logger("settings_logger", {"data": data})
+            settings_logger.info("Received settings action log")
 
         return jsonify({"message": "Successfully saved log."}), 200
     except ValidationError as error:
