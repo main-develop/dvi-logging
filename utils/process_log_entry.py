@@ -54,11 +54,11 @@ def process_log_entry() -> tuple[dict, int]:
     except ValidationError as error:
         details: dict = dict(list(error.errors()[0].items())[:-1])
         
-        logging.error(f"Log entry validation failed: {details}.")
+        logging.error(f"Log entry validation failed: {details}")
 
         return jsonify({"message": "Log entry validation failed.", "details": details}), 400
     
     except Exception as error:
-        logging.error(f"Unexpected error occurred: {error}.")
+        logging.error(f"Unexpected error occurred while processing a log entry: {error}")
 
-        return jsonify({"message": "Unexpected error occurred.", "details": error}), 500
+        return jsonify({"message": "Unexpected error occurred while processing a log entry.", "details": error}), 500
