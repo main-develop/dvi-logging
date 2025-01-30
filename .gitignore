@@ -172,3 +172,6 @@ cython_debug/
 
 # Docker
 .dockerignore
+
+# Logs
+logs/
