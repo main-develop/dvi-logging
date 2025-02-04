@@ -170,8 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Docker
-.dockerignore
-
 # Logs
 logs/
