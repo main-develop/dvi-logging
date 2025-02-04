@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from typing import Literal, Union, TypeVar, Generic, Annotated
+from typing import Literal, Optional, Union, TypeVar, Generic, Annotated
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -29,7 +29,7 @@ class LogWithAttributes(BaseLog, Generic[T]):
 class BaseAttributes(BaseModel):
     user_id: str
     success: bool
-    message: str | None = None
+    message: Optional[str] = None
 
 
 class PageNavigationAttributes(BaseModel):

@@ -2,7 +2,7 @@ from flask import request, jsonify
 from datetime import datetime
 import logging
 import json
-from models.log_models import PageNavigationLog, AuthenticationActionLog, SettingsActionLog
+from models.log import PageNavigationLog, AuthenticationActionLog, SettingsActionLog
 from pydantic import ValidationError
 from utils.setup_logger import setup_logger
 
@@ -56,9 +56,9 @@ def process_log_entry() -> tuple[dict, int]:
         
         logging.error(f"Log entry validation failed: {details}")
 
-        return jsonify({"message": "Log entry validation failed.", "details": details}), 400
+        return jsonify({"message": "Log entry validation failed.", "error": details}), 400
     
     except Exception as error:
         logging.error(f"Unexpected error occurred while processing a log entry: {error}")
 
-        return jsonify({"message": "Unexpected error occurred while processing a log entry.", "details": error}), 500
+        return jsonify({"message": "Unexpected error occurred while processing a log entry.", "error": error}), 500
