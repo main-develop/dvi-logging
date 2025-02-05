@@ -1,8 +1,10 @@
 import logging
+import os
 from typing import Mapping, Any
 from logstash import LogstashHandler
 
-logging.config.fileConfig("logging.conf")
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+logging.config.fileConfig(os.path.join(BASE_DIR, "logging.conf"))
 
 
 def setup_logger(name: str, data: Mapping[str, Any]) -> logging.Logger:
