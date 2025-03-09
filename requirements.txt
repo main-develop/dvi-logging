@@ -1,12 +1,5 @@
-aiohttp==3.11.11
-elasticsearch==8.17.1
-Flask==3.1.0
-Flask_Cors==5.0.0
-gunicorn==23.0.0
-uvicorn==0.34.0
-matplotlib==3.10.0
-pandas==2.2.3
-pydantic==2.10.6
+fastapi[standard]==0.115.9
+orjson==3.10.15
+pydantic-settings==2.8.1
 python-dotenv==1.0.1
 python-logstash==0.4.8
-quart==0.20.0
