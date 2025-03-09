@@ -1,30 +1,47 @@
-from flask import Flask
-from flask_cors import CORS
-from routes.navigation import navigation
-from routes.authentication import authentication
-from routes.settings import settings
-from routes.reports import reports
-from elasticsearch import Elasticsearch
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routers.authentication import authentication_router
+from routers.page_navigation import page_navigation_router
+from routers.settings_action import settings_action_router
+from settings import settings
+from fastapi.responses import FileResponse
 
+tags_metadata = [
+    {
+        "name": "Authentication logs",
+        "description": "Authentication logs endpoints."
+    },
+    {
+        "name": "Page navigation logs",
+        "description": "Page navigation logs endpoints."
+    },
+    {
+        "name": "Settings action logs",
+        "description": "Settings action logs endpoints."
+    }
+]
 
-def create_app():
-    app = Flask(__name__)
+app = FastAPI(
+    title="DVI logging",
+    docs_url=None if settings.env == "production" else settings.docs_url,
+    redoc_url=None,
+    openapi_tags=tags_metadata,
+    swagger_ui_parameters={"defaultModelsExpandDepth": -1}
+)
 
-    CORS(app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:80"],
+    allow_headers=["X-Signature", "Content-Type"],
+    allow_methods=["POST"]
+)
 
-    elasticsearch_client = Elasticsearch(hosts=["http://elasticsearch:9200/"])
-    app.elasticsearch_client = elasticsearch_client
+app.include_router(authentication_router)
+app.include_router(page_navigation_router)
+app.include_router(settings_action_router)
 
-    app.register_blueprint(navigation, url_prefix="/dvi-logging/navigation")
-    app.register_blueprint(authentication, url_prefix="/dvi-logging/authentication")
-    app.register_blueprint(settings, url_prefix="/dvi-logging/settings")
-    app.register_blueprint(reports, url_prefix="/dvi-logging/reports")
-
-    return app
-    
-    
-app = create_app()
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
-    
+if settings.env == "development":
+    @app.get("/{favicon:path}", include_in_schema=False)
+    async def get_favicon(favicon: str):
+        if favicon in {settings.favicon_url.strip("/"), "favicon.ico"}:
+            return FileResponse("./static/favicon.ico")
