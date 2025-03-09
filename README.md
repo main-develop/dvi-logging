@@ -22,6 +22,25 @@ The microservice source code should be located in a separate subdirectory. If th
 > git clone https://github.com/main-develop/dvi-logging.git ./dvi-logging
 ```
 
+## Setup environment
+
+A sample `.env.sample` environment variable file is located in the root directory of the cloned project. It contains the following variables:
+
+```
+SECRET_KEY="your secret key"
+DOCS_URL="relative url"
+ENV=development
+HOST=http://127.0.0.1:5001
+FAVICON_URL=/{docs_relative_url_here}/favicon.ico
+```
+
+where:
+
+- `SECRET_KEY` - replace `"your secret key"` with a randomly generated string of at least 28 characters;
+- `DOCS_URL` - preferred OpenAPI documentation's relative URL.
+
+For the project to work properly, you must change the name of this file to `.env`.
+
 ## Setup additional components
 
 For a fully functional DVI system, the final project structure should look like this:
@@ -262,8 +281,6 @@ services:
       - "5001:5001"
     depends_on:
       - api
-    command: >
-      sh -c "gunicorn -w 4 -b 0.0.0.0:5001 --chdir src app:app"
 
   # Frontend service
   frontend:
